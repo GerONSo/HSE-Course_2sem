@@ -12,20 +12,18 @@ public:
     virtual void AddEdge(Node<T> *from, Node<T> *to, T &&_obj) {
         from->next.push_back(PtrsEdge<T>{from, to, std::move(_obj)});
         to->prev.push_back(PtrsEdge<T>{from, to, std::move(_obj)});
-        randomVertex = from;
+        if(from->next.size() == 0 && from->prev.size() == 0) {
+            size++;
+        }
+        if(to->next.size() == 0 && to->prev.size() == 0) {
+            size++;
+        }
     };
 
     PtrsGraph() = default;
 
     virtual int VerticesCount() const {
-        if(randomVertex == nullptr) {
-            return 0;
-        }
-        else {
-            std::vector<Node<T> *> vertices;
-            DeepFirstSearch(randomVertex, vertices);
-            return vertices.size();
-        }
+        return size;
     };
 
     virtual void GetNextVertices(Node<T> *vertex, std::vector<Node<T> *> &vertices) const {
@@ -66,7 +64,7 @@ public:
     };
     
 private:
-    Node<T> *randomVertex = nullptr;  
+    int size;
 
     void dfs(Node<T> *vertex, std::vector<Node<T> *> &vertices, std::map<Node<T> *, bool> &used) const {
         used[vertex] = true;
